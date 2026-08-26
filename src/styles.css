@@ -164,7 +164,7 @@ footer small{margin-left:0}
 .gauge-visual{height:190px}
 .svg-gauge{height:185px}
 .gauge-content{top:64px}
-.gauge-labels{margin-top:12px;padding:0 6px}
+.gauge-labels{margin-top:12px;padding:0 6px 18px}
 .gauge-arc{overflow:visible}
 .gauge-arc:before{clip-path:inset(0 0 50% 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 16px),#000 0);mask:radial-gradient(farthest-side,transparent calc(100% - 16px),#000 0)}
 .gauge-inner{background:transparent}
@@ -208,4 +208,40 @@ footer{width:100%;margin-top:auto}
   .results-page,.adjust-page,.contact-page{margin-top:40px;margin-bottom:72px}
   .calculator-card .mobile-trust{display:none}
   .success{width:100%;max-width:550px;min-height:620px;margin:40px auto 72px;padding-top:0}
+}
+
+/* Stable spacing for scenario metrics */
+.brand:before{display:none}
+.brand{display:inline-flex;align-items:center;gap:9px}
+.brand img{display:block;width:32px;height:32px;object-fit:contain;border-radius:8px}
+.required-mark{color:#b63c3c}
+.desktop-support{display:none}
+.mobile-support{display:block;color:#69788b}
+.mobile-support>p{font-size:15px;margin:0 0 16px}
+.mobile-support ul{list-style:none;padding:0;margin:0}
+.mobile-support li{display:flex;align-items:center;gap:10px;margin:10px 0;color:#10223c;font-size:14px;font-weight:600}
+.mobile-support li svg{width:20px;color:#16866f}
+.desktop-quote{display:none}
+.mobile-quote{display:block;margin:0 0 8px}
+.contact-page .help-copy ul{margin:18px 0 4px}
+.contact-page .help-copy li{margin:10px 0}
+.scenario-summary .mini-metrics .metric{padding:20px 16px}
+.scenario-summary .mini-metrics .metric>span{white-space:nowrap}
+.scenario-summary .mini-metrics .metric strong{font-size:clamp(19px,2vw,23px);min-width:0}
+.scenario-summary .mini-metrics{border-bottom:0}
+.scenario-summary .mini-metrics .metric:nth-last-child(-n+2){border-bottom:0}
+
+@media (min-width:768px) and (max-width:1023px){
+  .scenario-summary{grid-template-columns:1fr}
+  .scenario-summary .gauge{margin-bottom:20px}
+}
+
+@media (min-width:1024px){
+  .scenario-summary{grid-template-columns:minmax(290px,.9fr) minmax(320px,1.1fr);column-gap:20px}
+  .desktop-quote{display:block}
+  .desktop-support{display:block}
+  .mobile-support{display:none}
+  .mobile-quote{display:none}
+  .contact-page .help-copy ul{margin:28px 0}
+  .contact-page .help-copy li{margin:14px 0}
 }

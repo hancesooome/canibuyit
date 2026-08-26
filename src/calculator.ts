@@ -1,4 +1,8 @@
-export type AffordabilityInput = { propertyPrice: number; deposit: number; annualIncome: number }
+export type AffordabilityInput = {
+  propertyPrice: number
+  deposit: number
+  annualIncome: number
+}
 export type Band = 'strong' | 'good' | 'borderline' | 'challenging'
 
 export function calculateAffordability({ propertyPrice, deposit, annualIncome }: AffordabilityInput) {
@@ -18,6 +22,20 @@ export function getAffordabilityBand(value: number): Band {
   return 'challenging'
 }
 
-export const formatMoney = (value: number) => new Intl.NumberFormat('en-GB', {
+export function getPositionScore(incomeMultiple: number) {
+  return Math.max(4, Math.min(100, ((5.5 - incomeMultiple) / 1.2) * 100))
+}
+
+export function roundIncomeMultiple(value: number) {
+  return Math.round(value * 10) / 10
+}
+
+export function hasVisibleImprovement(original: number, current: number) {
+  return roundIncomeMultiple(current) < roundIncomeMultiple(original)
+}
+
+const moneyFormatter = new Intl.NumberFormat('en-GB', {
   style: 'currency', currency: 'GBP', maximumFractionDigits: 0,
-}).format(value)
+})
+
+export const formatMoney = (value: number) => moneyFormatter.format(value)

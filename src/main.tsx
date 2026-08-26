@@ -1,4 +1,4 @@
-import React, { FormEvent, useMemo, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowLeft,
@@ -19,8 +19,12 @@ import {
   calculateAffordability,
   formatMoney,
   getAffordabilityBand,
+  getPositionScore,
+  hasVisibleImprovement,
+  roundIncomeMultiple,
 } from "./calculator";
 import "./styles.css";
+import logo from "./logo.png";
 
 type Step = 1 | 2 | 3 | 4;
 const initial: AffordabilityInput = {
@@ -38,7 +42,8 @@ function Header({ onStart }: { onStart: () => void }) {
   return (
     <header className="site-header">
       <button className="brand" onClick={() => go(onStart)}>
-        Can I Buy It?
+        <img src={logo} alt="" />
+        <span>Can I Buy It?</span>
       </button>
       <nav>
         <button onClick={onStart}>Calculator</button>
@@ -144,7 +149,7 @@ function Gauge({ value }: { value: number }) {
     borderline: "#d88b21",
     challenging: "#c64b4b",
   }[band];
-  const positionScore = Math.max(4, Math.min(100, ((5.5 - value) / 1.2) * 100));
+  const positionScore = getPositionScore(value);
   return (
     <div
       className="gauge"
@@ -465,15 +470,11 @@ function Adjust({
 }) {
   const r = calculateAffordability(values),
     o = calculateAffordability(original);
-  const displayedOriginalMultiple = Math.round(o.incomeMultiple * 10) / 10;
-  const displayedCurrentMultiple = Math.round(r.incomeMultiple * 10) / 10;
-  const improved = displayedCurrentMultiple < displayedOriginalMultiple;
+  const displayedOriginalMultiple = roundIncomeMultiple(o.incomeMultiple);
+  const displayedCurrentMultiple = roundIncomeMultiple(r.incomeMultiple);
+  const improved = hasVisibleImprovement(o.incomeMultiple, r.incomeMultiple);
   return (
     <main className="adjust-page">
-      <div className="page-title">
-        <h1>What could improve your position?</h1>
-        <p>Move the sliders to explore. Your result updates as you go.</p>
-      </div>
       <div className="adjust-grid">
         <section className="slider-card">
           <h2>Adjust your numbers</h2>
@@ -557,13 +558,7 @@ function Adjust({
   );
 }
 
-function Contact({
-  values,
-  back,
-}: {
-  values: AffordabilityInput;
-  back: () => void;
-}) {
+function Contact({ back }: { back: () => void }) {
   const [sent, setSent] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -600,22 +595,18 @@ function Contact({
     <main className="contact-page">
       <section className="help-copy">
         <h1>Let’s find the right path forward.</h1>
-        <p>
-          Share a few details and one of our mortgage experts will get in touch
-          to talk through your options.
-        </p>
-        <ul>
-          <li>
-            <Check /> Whole-of-market advice
-          </li>
-          <li>
-            <Check /> Access to thousands of mortgage deals
-          </li>
-          <li>
-            <Check /> No obligation, just helpful guidance
-          </li>
-        </ul>
-        <div className="quote">
+        <div className="desktop-support">
+          <p>
+            Share a few details and one of our mortgage experts will get in touch
+            to talk through your options.
+          </p>
+          <ul>
+            <li><Check /> Whole-of-market advice</li>
+            <li><Check /> Access to thousands of mortgage deals</li>
+            <li><Check /> No obligation, just helpful guidance</li>
+          </ul>
+        </div>
+        <div className="quote desktop-quote">
           “Speaking to someone made everything feel much clearer.”
           <span>— Recent homebuyer</span>
         </div>
@@ -629,7 +620,7 @@ function Contact({
       >
         <h2>Tell us how to reach you</h2>
         <label>
-          Full name
+          Full name <span className="required-mark" aria-hidden="true">*</span>
           <input
             required
             value={name}
@@ -638,7 +629,7 @@ function Contact({
           />
         </label>
         <label>
-          Email address
+          Email address <span className="required-mark" aria-hidden="true">*</span>
           <input
             required
             type="email"
@@ -652,7 +643,7 @@ function Contact({
           <input type="tel" placeholder="07123 456789" />
         </label>
         <label>
-          When are you looking to buy?
+          When are you looking to buy? <span className="required-mark" aria-hidden="true">*</span>
           <div className="select-wrap">
             <select required defaultValue="">
               <option value="" disabled>
@@ -673,6 +664,21 @@ function Contact({
           <LockKeyhole size={14} /> Your details are secure and never shared.
         </p>
       </form>
+      <div className="mobile-support">
+        <p>
+          Share a few details and one of our mortgage experts will get in touch
+          to talk through your options.
+        </p>
+        <ul>
+          <li><Check /> Whole-of-market advice</li>
+          <li><Check /> Access to thousands of mortgage deals</li>
+          <li><Check /> No obligation, just helpful guidance</li>
+        </ul>
+      </div>
+      <div className="quote mobile-quote">
+        “Speaking to someone made everything feel much clearer.”
+        <span>— Recent homebuyer</span>
+      </div>
     </main>
   );
 }
@@ -681,7 +687,7 @@ function App() {
   const [step, setStep] = useState<Step>(1);
   const [values, setValues] = useState(initial);
   const [original, setOriginal] = useState(initial);
-  const content = useMemo(() => {
+  const content = (() => {
     if (step === 1)
       return (
         <Details
@@ -714,8 +720,8 @@ function App() {
           help={() => setStep(4)}
         />
       );
-    return <Contact values={values} back={() => setStep(2)} />;
-  }, [step, values, original]);
+    return <Contact back={() => setStep(2)} />;
+  })();
   return (
     <div className="app">
       <Header
@@ -726,7 +732,6 @@ function App() {
       />
       {content}
       <footer id="how">
-        <b>Can I Buy It?</b>
         <span>Simple answers for one of life’s biggest decisions.</span>
         <small>Prototype only · Not financial advice</small>
       </footer>
