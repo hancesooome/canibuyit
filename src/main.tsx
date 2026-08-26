@@ -1,18 +1,16 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowLeft,
   ArrowRight,
   Check,
   ChevronDown,
-  CircleCheck,
   Info,
   LockKeyhole,
   Menu,
   ShieldCheck,
   Sparkles,
   Timer,
-  UserRound,
 } from "lucide-react";
 import {
   AffordabilityInput,
@@ -433,11 +431,59 @@ function Slider({
   step: number;
   onChange: (n: number) => void;
 }) {
+  const [draft, setDraft] = useState(value.toLocaleString("en-GB"));
+  const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    if (!editing) setDraft(value.toLocaleString("en-GB"));
+  }, [value, editing]);
+
+  useEffect(() => {
+    if (value > max) onChange(max);
+    else if (value < min) onChange(min);
+  }, [value, min, max, onChange]);
+
+  const commit = () => {
+    const parsed = Number(draft.replace(/\D/g, ""));
+    const nextValue = parsed ? Math.min(max, Math.max(min, parsed)) : value;
+    onChange(nextValue);
+    setDraft(nextValue.toLocaleString("en-GB"));
+    setEditing(false);
+  };
+
   return (
     <label className="slider">
       <span>
         <b>{label}</b>
-        <strong>{formatMoney(value)}</strong>
+        <span className="slider-value-text">
+          <span>£</span>
+          <input
+            className="slider-plain-input"
+            aria-label={`${label} exact amount`}
+            inputMode="numeric"
+            size={draft.length || 1}
+            value={draft}
+            onFocus={() => {
+              setEditing(true);
+              setDraft(String(value));
+            }}
+            onChange={(event) => {
+              const raw = event.target.value.replace(/\D/g, "");
+              const parsed = Number(raw);
+              if (parsed > max) {
+                setDraft(max.toLocaleString("en-GB"));
+                onChange(max);
+                return;
+              }
+              setDraft(raw);
+              if (parsed >= min) onChange(parsed);
+            }}
+            onBlur={commit}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") event.currentTarget.blur();
+            }}
+          />
+        </span>
       </span>
       <input
         type="range"
@@ -473,6 +519,18 @@ function Adjust({
   const displayedOriginalMultiple = roundIncomeMultiple(o.incomeMultiple);
   const displayedCurrentMultiple = roundIncomeMultiple(r.incomeMultiple);
   const improved = hasVisibleImprovement(o.incomeMultiple, r.incomeMultiple);
+
+  // Dynamic limits and steps for Sliders, based on the customer's original input
+  const maxPropertyPrice = Math.max(750000, original.propertyPrice);
+  const propertyPriceStep = maxPropertyPrice > 10000000 ? 100000 : (maxPropertyPrice > 5000000 ? 50000 : (maxPropertyPrice > 2000000 ? 25000 : 5000));
+
+  const maxDepositLimit = Math.max(375000, original.propertyPrice - 1000);
+  const maxDeposit = Math.min(maxDepositLimit, values.propertyPrice - 1000);
+  const depositStep = maxDepositLimit > 10000000 ? 100000 : (maxDepositLimit > 5000000 ? 50000 : (maxDepositLimit > 1000000 ? 10000 : 1000));
+
+  const maxIncome = Math.max(200000, original.annualIncome);
+  const incomeStep = maxIncome > 1000000 ? 50000 : (maxIncome > 500000 ? 25000 : (maxIncome > 200000 ? 10000 : 1000));
+
   return (
     <main className="adjust-page">
       <div className="adjust-grid">
@@ -482,8 +540,8 @@ function Adjust({
             label="Property price"
             value={values.propertyPrice}
             min={100000}
-            max={750000}
-            step={5000}
+            max={maxPropertyPrice}
+            step={propertyPriceStep}
             onChange={(v) =>
               setValues((s) => ({
                 ...s,
@@ -496,12 +554,12 @@ function Adjust({
             label="Your deposit"
             value={values.deposit}
             min={5000}
-            max={375000}
-            step={1000}
+            max={maxDeposit}
+            step={depositStep}
             onChange={(v) =>
               setValues((s) => ({
                 ...s,
-                deposit: Math.min(v, s.propertyPrice - 1000),
+                deposit: v,
               }))
             }
           />
@@ -509,8 +567,8 @@ function Adjust({
             label="Annual household income"
             value={values.annualIncome}
             min={20000}
-            max={200000}
-            step={1000}
+            max={maxIncome}
+            step={incomeStep}
             onChange={(v) => setValues((s) => ({ ...s, annualIncome: v }))}
           />
           <button className="reset" onClick={() => setValues(original)}>
@@ -597,13 +655,19 @@ function Contact({ back }: { back: () => void }) {
         <h1>Let’s find the right path forward.</h1>
         <div className="desktop-support">
           <p>
-            Share a few details and one of our mortgage experts will get in touch
-            to talk through your options.
+            Share a few details and one of our mortgage experts will get in
+            touch to talk through your options.
           </p>
           <ul>
-            <li><Check /> Whole-of-market advice</li>
-            <li><Check /> Access to thousands of mortgage deals</li>
-            <li><Check /> No obligation, just helpful guidance</li>
+            <li>
+              <Check /> Whole-of-market advice
+            </li>
+            <li>
+              <Check /> Access to thousands of mortgage deals
+            </li>
+            <li>
+              <Check /> No obligation, just helpful guidance
+            </li>
           </ul>
         </div>
         <div className="quote desktop-quote">
@@ -620,7 +684,10 @@ function Contact({ back }: { back: () => void }) {
       >
         <h2>Tell us how to reach you</h2>
         <label>
-          Full name <span className="required-mark" aria-hidden="true">*</span>
+          Full name{" "}
+          <span className="required-mark" aria-hidden="true">
+            *
+          </span>
           <input
             required
             value={name}
@@ -629,7 +696,10 @@ function Contact({ back }: { back: () => void }) {
           />
         </label>
         <label>
-          Email address <span className="required-mark" aria-hidden="true">*</span>
+          Email address{" "}
+          <span className="required-mark" aria-hidden="true">
+            *
+          </span>
           <input
             required
             type="email"
@@ -643,7 +713,10 @@ function Contact({ back }: { back: () => void }) {
           <input type="tel" placeholder="07123 456789" />
         </label>
         <label>
-          When are you looking to buy? <span className="required-mark" aria-hidden="true">*</span>
+          When are you looking to buy?{" "}
+          <span className="required-mark" aria-hidden="true">
+            *
+          </span>
           <div className="select-wrap">
             <select required defaultValue="">
               <option value="" disabled>
@@ -670,9 +743,15 @@ function Contact({ back }: { back: () => void }) {
           to talk through your options.
         </p>
         <ul>
-          <li><Check /> Whole-of-market advice</li>
-          <li><Check /> Access to thousands of mortgage deals</li>
-          <li><Check /> No obligation, just helpful guidance</li>
+          <li>
+            <Check /> Whole-of-market advice
+          </li>
+          <li>
+            <Check /> Access to thousands of mortgage deals
+          </li>
+          <li>
+            <Check /> No obligation, just helpful guidance
+          </li>
         </ul>
       </div>
       <div className="quote mobile-quote">

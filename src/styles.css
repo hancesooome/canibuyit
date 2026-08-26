@@ -164,13 +164,13 @@ footer small{margin-left:0}
 .gauge-visual{height:190px}
 .svg-gauge{height:185px}
 .gauge-content{top:64px}
-.gauge-labels{margin-top:12px;padding:0 6px 18px}
+.gauge-labels{margin-top:12px;padding:0 15.4% 18px}
 .gauge-arc{overflow:visible}
 .gauge-arc:before{clip-path:inset(0 0 50% 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 16px),#000 0);mask:radial-gradient(farthest-side,transparent calc(100% - 16px),#000 0)}
 .gauge-inner{background:transparent}
 .gauge-arc:before{transition:--gauge .16s ease,background-color .16s ease}
 .metric strong,.slider strong,.gauge-inner strong{font-variant-numeric:tabular-nums}
-.mini-metrics .metric strong{white-space:nowrap;min-width:7ch}
+.mini-metrics .metric strong{white-space:nowrap;min-width:7ch;overflow:hidden;text-overflow:ellipsis}
 .live-card{display:flex;flex-direction:column}
 .improvement{min-height:58px;margin-bottom:8px}
 .improvement.placeholder{visibility:hidden}
@@ -210,7 +210,14 @@ footer{width:100%;margin-top:auto}
   .success{width:100%;max-width:550px;min-height:620px;margin:40px auto 72px;padding-top:0}
 }
 
-/* Stable spacing for scenario metrics */
+/* Slider label row */
+.slider>span{gap:10px}
+.slider>span>b{font-size:13px;white-space:nowrap!important}
+.slider-value-text{display:flex;align-items:baseline;gap:4px;font-weight:700;font-size:14px;color:#10223c;white-space:nowrap;border-bottom:2px dashed #b6c4d4;padding-bottom:1px;cursor:text;transition:border-color .15s}
+.slider-value-text:hover{border-bottom-color:#7e9ab5}
+.slider-value-text:focus-within{border-bottom:2px solid var(--blue)}
+.slider-value-text>span{font-weight:500;color:#566477;font-size:13px}
+.slider-plain-input{border:0;outline:0;background:transparent;font-weight:700;font-size:14px;color:#10223c;font-family:inherit;font-variant-numeric:tabular-nums;text-align:left;padding:0;cursor:text;min-width:1ch}
 .brand:before{display:none}
 .brand{display:inline-flex;align-items:center;gap:9px}
 .brand img{display:block;width:32px;height:32px;object-fit:contain;border-radius:8px}
