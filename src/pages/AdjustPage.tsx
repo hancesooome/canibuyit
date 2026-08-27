@@ -103,9 +103,9 @@ export function AdjustPage({
   }
 
   return (
-    <main className="adjust-page">
-      <div className="adjust-grid">
-        <section className="slider-card">
+    <main className="adjust-page mx-[14px] mt-6 mb-12 md:mx-7 md:mb-16 lg:mx-auto lg:mt-10 lg:mb-[72px] lg:max-w-[1060px]">
+      <div className="adjust-grid grid grid-cols-1 gap-0 overflow-hidden rounded-[14px] border border-line bg-white shadow-card md:grid-cols-[minmax(290px,.8fr)_minmax(0,1.4fr)] lg:grid-cols-[340px_minmax(0,1fr)]">
+        <section className="slider-card rounded-none border-0 border-b border-line bg-white px-[18px] py-[21px] shadow-none md:border-r md:border-b-0 md:p-7">
           <h2>Adjust your numbers</h2>
           <Slider
             label="Property price"
@@ -135,7 +135,7 @@ export function AdjustPage({
             Reset to original numbers
           </button>
         </section>
-        <section className="live-card">
+        <section className="live-card flex flex-col rounded-none border-0 bg-white px-[18px] py-[21px] shadow-none md:p-7">
           <div className="scenario-summary">
             <Gauge value={result.incomeMultiple} />
             <div className="mini-metrics">

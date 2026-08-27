@@ -61,10 +61,10 @@ export function App() {
   }
 
   return (
-    <div className="app">
+    <div className="app min-h-screen flex flex-col">
       <Header onStart={startOver} />
       {renderCurrentPage()}
-      <footer id="how">
+      <footer id="how" className="mt-auto w-full">
         <span>Simple answers for one of life’s biggest decisions.</span>
         <small>Prototype only · Not financial advice</small>
       </footer>

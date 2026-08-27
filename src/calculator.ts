@@ -13,7 +13,7 @@ export function calculateAffordability({
 }: AffordabilityInput) {
   const mortgageRequired = propertyPrice - deposit;
   return {
-    mortgageRequired,
+    mortgageRequired: mortgageRequired,
     depositPercentage: (deposit / propertyPrice) * 100,
     ltv: (mortgageRequired / propertyPrice) * 100,
     incomeMultiple: mortgageRequired / annualIncome,

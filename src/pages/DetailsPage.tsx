@@ -58,7 +58,7 @@ export function DetailsPage({
       : "";
 
   return (
-    <main className="details-page">
+    <main className="details-page mx-[14px] mt-6 mb-12 flex min-h-0 flex-col items-stretch gap-6 md:mx-7 md:mb-16 lg:mx-auto lg:mt-11 lg:grid lg:min-h-[590px] lg:max-w-[1180px] lg:grid-cols-[1.15fr_.85fr] lg:items-center lg:gap-[85px]">
       <section className="intro">
         <div className="eyebrow">Mortgage affordability calculator</div>
         <h1>
@@ -88,7 +88,7 @@ export function DetailsPage({
           </div>
         </div>
       </section>
-      <form className="calculator-card" onSubmit={handleSubmit}>
+      <form className="calculator-card rounded-xl border border-line bg-white px-[18px] py-[22px] shadow-card md:mx-auto md:w-full md:max-w-[620px] md:p-[30px] lg:m-0 lg:max-w-none lg:p-8" onSubmit={handleSubmit}>
         <div className="card-heading">
           <h2>Tell us about your plans</h2>
         </div>
@@ -115,7 +115,7 @@ export function DetailsPage({
           hint="Before tax, including joint income"
           error={errors.annualIncome}
         />
-        <button className="primary" type="submit">
+        <button className="primary mt-2 inline-flex h-[50px] w-full items-center justify-center gap-[9px] rounded-[7px] border-0 bg-brand px-6 font-bold text-white shadow-[0_7px_16px_rgba(28,104,212,.2)] hover:bg-brand-hover" type="submit">
           Show my result <ArrowRight size={18} />
         </button>
         <div className="trust-row mobile-trust">

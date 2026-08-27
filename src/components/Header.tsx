@@ -23,21 +23,21 @@ export function Header({ onStart }: HeaderProps) {
   }
 
   return (
-    <header className="site-header">
+    <header className="site-header relative z-20 flex items-center justify-between border-b border-[#e6ebf1] bg-white">
       <button
-        className="brand"
+        className="brand inline-flex items-center gap-[9px] border-0 bg-transparent font-display font-extrabold text-navy"
         onClick={() => runMobileNavigationAction(onStart)}
       >
         <img src={logo} alt="" />
         <span>Can I Buy It?</span>
       </button>
-      <nav>
-        <button onClick={onStart}>Calculator</button>
-        <button onClick={() => scrollToSection("how")}>How it works</button>
-        <button onClick={() => scrollToSection("about")}>About us</button>
+      <nav className="hidden gap-8 lg:flex">
+        <button className="border-0 bg-transparent font-semibold text-[#4c5b6c]" onClick={onStart}>Calculator</button>
+        <button className="border-0 bg-transparent font-semibold text-[#4c5b6c]" onClick={() => scrollToSection("how")}>How it works</button>
+        <button className="border-0 bg-transparent font-semibold text-[#4c5b6c]" onClick={() => scrollToSection("about")}>About us</button>
       </nav>
       <button
-        className="menu"
+        className="menu min-h-11 min-w-11 border-0 bg-transparent p-[10px] lg:hidden"
         aria-label={isMenuOpen ? "Close navigation" : "Open navigation"}
         aria-expanded={isMenuOpen}
         aria-controls="mobile-navigation"
